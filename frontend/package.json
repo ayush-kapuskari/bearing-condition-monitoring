@@ -1,0 +1,11 @@
+{
+  "name": "bearing-condition-monitoring-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend for DSP-Based Bearing Condition Monitoring",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite",
+    "preview": "vite preview"
+  }
+}

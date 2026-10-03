@@ -1,0 +1,41 @@
+# CWRU Dataset
+matlab/data/raw/
+
+# MATLAB generated files
+*.asv
+*.m~
+
+# MATLAB results
+matlab/results/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+
+# Backend storage
+backend/storage/
+
+# Node / React
+node_modules/
+dist/
+build/
+
+# Frontend environment
+frontend/.env
+frontend/.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

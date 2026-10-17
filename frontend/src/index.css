@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #f4f4f5; /* zinc-100 */
+    color: #18181b; /* zinc-900 */
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom engineering instrument styling */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

@@ -26,7 +26,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
     return envAmp[closestIdx] || 0;
   };
 
-  // Base trace: Envelope Spectrum
+  // Base trace: Demodulated Envelope Spectrum in electric cyan (#22D3EE)
   const traces = useMemo(() => {
     const list = [
       {
@@ -34,13 +34,13 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y: envAmp,
         type: 'scatter',
         mode: 'lines',
-        name: 'Envelope Spectrum (0-600 Hz)',
-        line: { color: '#09090b', width: 1.2 },
+        name: 'Envelope Spectrum (0–600 Hz)',
+        line: { color: '#22D3EE', width: 1.5 },
         hovertemplate: 'Frequency: %{x:.2f} Hz<br>Envelope Amplitude: %{y:.4f}<extra></extra>'
       }
     ];
 
-    // Matched peak dots
+    // Matched peak dots from genuine evidence
     const matchedRows = (evidence || []).filter(e => e.matched && e.fDetected !== null && e.fDetected !== undefined);
 
     const outerMatched = matchedRows.filter(e => e.fault === 'outer');
@@ -54,7 +54,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         type: 'scatter',
         mode: 'markers',
         name: 'Detected BPFO Peak',
-        marker: { size: 9, color: '#dc2626', symbol: 'circle', line: { color: '#ffffff', width: 1.5 } },
+        marker: { size: 9, color: '#E000A8', symbol: 'circle', line: { color: '#F5F5FA', width: 1.5 } },
         text: outerMatched.map(e => `Detected ${e.harmonic}x BPFO: ${e.fDetected.toFixed(2)} Hz<br>SNR: ${e.snrDb ? e.snrDb.toFixed(1) : '—'} dB`),
         hoverinfo: 'text'
       });
@@ -67,7 +67,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         type: 'scatter',
         mode: 'markers',
         name: 'Detected BPFI Peak',
-        marker: { size: 9, color: '#2563eb', symbol: 'diamond', line: { color: '#ffffff', width: 1.5 } },
+        marker: { size: 9, color: '#38BDF8', symbol: 'diamond', line: { color: '#F5F5FA', width: 1.5 } },
         text: innerMatched.map(e => `Detected ${e.harmonic}x BPFI: ${e.fDetected.toFixed(2)} Hz<br>SNR: ${e.snrDb ? e.snrDb.toFixed(1) : '—'} dB`),
         hoverinfo: 'text'
       });
@@ -79,8 +79,8 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y: ballMatched.map(e => getAmpAt(e.fDetected)),
         type: 'scatter',
         mode: 'markers',
-        name: 'Detected 2xBSF Peak',
-        marker: { size: 9, color: '#7c3aed', symbol: 'square', line: { color: '#ffffff', width: 1.5 } },
+        name: 'Detected 2×BSF Peak',
+        marker: { size: 9, color: '#A100FF', symbol: 'square', line: { color: '#F5F5FA', width: 1.5 } },
         text: ballMatched.map(e => `Detected ${e.harmonic}x 2BSF: ${e.fDetected.toFixed(2)} Hz<br>SNR: ${e.snrDb ? e.snrDb.toFixed(1) : '—'} dB`),
         hoverinfo: 'text'
       });
@@ -89,12 +89,12 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
     return list;
   }, [envF, envAmp, evidence, showOuter, showInner, showBall]);
 
-  // Shapes: Vertical lines & shaded tolerance windows (+/- 1% around fundamentals)
+  // Shapes: Vertical lines & shaded tolerance windows (±1% around kinematic fundamentals)
   const { shapes, annotations } = useMemo(() => {
     const s = [];
     const a = [];
 
-    // Shaft frequency
+    // Shaft fundamental
     const shaft = theory.shaft;
     if (shaft) {
       s.push({
@@ -104,7 +104,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y0: 0,
         y1: 1,
         yref: 'paper',
-        line: { color: '#71717a', width: 1, dash: 'dot' }
+        line: { color: '#6E6E82', width: 1, dash: 'dot' }
       });
       a.push({
         x: shaft,
@@ -112,12 +112,12 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         yref: 'paper',
         text: `Shaft (${shaft.toFixed(1)} Hz)`,
         showarrow: false,
-        font: { size: 9, color: '#52525b', family: 'monospace' },
+        font: { size: 9, color: '#A5A5B5', family: 'JetBrains Mono, monospace' },
         yshift: 10
       });
     }
 
-    // Outer Race (BPFO)
+    // Outer Race (BPFO) in Neon Magenta (#E000A8)
     const bpfo = theory.bpfo;
     if (showOuter && bpfo) {
       // 1% tolerance window around fundamental
@@ -128,7 +128,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y0: 0,
         y1: 1,
         yref: 'paper',
-        fillcolor: 'rgba(220, 38, 38, 0.12)',
+        fillcolor: 'rgba(224, 0, 168, 0.15)',
         line: { width: 0 }
       });
 
@@ -143,7 +143,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
             y0: 0,
             y1: 1,
             yref: 'paper',
-            line: { color: '#dc2626', width: harm === 1 ? 1.5 : 1, dash: harm === 1 ? 'solid' : 'dash' }
+            line: { color: '#E000A8', width: harm === 1 ? 1.5 : 1, dash: harm === 1 ? 'solid' : 'dash' }
           });
           a.push({
             x: f,
@@ -151,14 +151,14 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
             yref: 'paper',
             text: harm === 1 ? `BPFO ${f.toFixed(1)}` : `${harm}x BPFO`,
             showarrow: false,
-            font: { size: 9, color: '#dc2626', family: 'monospace' },
+            font: { size: 9, color: '#E000A8', family: 'JetBrains Mono, monospace' },
             yshift: harm === 1 ? -4 : -16
           });
         }
       });
     }
 
-    // Inner Race (BPFI)
+    // Inner Race (BPFI) in Cyan/Sky (#38BDF8)
     const bpfi = theory.bpfi;
     if (showInner && bpfi) {
       // 1% tolerance window around fundamental
@@ -169,7 +169,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y0: 0,
         y1: 1,
         yref: 'paper',
-        fillcolor: 'rgba(37, 99, 235, 0.12)',
+        fillcolor: 'rgba(56, 189, 248, 0.15)',
         line: { width: 0 }
       });
 
@@ -183,7 +183,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
             y0: 0,
             y1: 1,
             yref: 'paper',
-            line: { color: '#2563eb', width: harm === 1 ? 1.5 : 1, dash: harm === 1 ? 'solid' : 'dash' }
+            line: { color: '#38BDF8', width: harm === 1 ? 1.5 : 1, dash: harm === 1 ? 'solid' : 'dash' }
           });
           a.push({
             x: f,
@@ -191,14 +191,14 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
             yref: 'paper',
             text: harm === 1 ? `BPFI ${f.toFixed(1)}` : `${harm}x BPFI`,
             showarrow: false,
-            font: { size: 9, color: '#2563eb', family: 'monospace' },
+            font: { size: 9, color: '#38BDF8', family: 'JetBrains Mono, monospace' },
             yshift: 0
           });
         }
       });
     }
 
-    // Ball Fault (2x BSF)
+    // Ball Fault (2×BSF) in Electric Purple (#A100FF)
     const bsf2 = theory.bsf2 || (theory.bsf ? theory.bsf * 2 : null);
     if (showBall && bsf2) {
       // 1% tolerance window around fundamental
@@ -209,7 +209,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y0: 0,
         y1: 1,
         yref: 'paper',
-        fillcolor: 'rgba(124, 58, 237, 0.12)',
+        fillcolor: 'rgba(161, 0, 255, 0.15)',
         line: { width: 0 }
       });
 
@@ -223,25 +223,24 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
             y0: 0,
             y1: 1,
             yref: 'paper',
-            line: { color: '#7c3aed', width: harm === 1 ? 1.5 : 1, dash: harm === 1 ? 'solid' : 'dash' }
+            line: { color: '#A100FF', width: harm === 1 ? 1.5 : 1, dash: harm === 1 ? 'solid' : 'dash' }
           });
           a.push({
             x: f,
             y: 0.82,
             yref: 'paper',
-            text: harm === 1 ? `2xBSF ${f.toFixed(1)}` : `${harm}x (2BSF)`,
+            text: harm === 1 ? `2×BSF ${f.toFixed(1)}` : `${harm}x (2BSF)`,
             showarrow: false,
-            font: { size: 9, color: '#7c3aed', family: 'monospace' },
+            font: { size: 9, color: '#A100FF', family: 'JetBrains Mono, monospace' },
             yshift: 0
           });
         }
       });
     }
 
-    // Cage / FTF
+    // Cage (FTF) in Amber (#FBBF24)
     const ftf = theory.ftf;
     if (showCage && ftf) {
-      // 1% tolerance window around fundamental
       s.push({
         type: 'rect',
         x0: ftf * 0.99,
@@ -249,7 +248,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y0: 0,
         y1: 1,
         yref: 'paper',
-        fillcolor: 'rgba(217, 119, 6, 0.12)',
+        fillcolor: 'rgba(251, 191, 36, 0.15)',
         line: { width: 0 }
       });
 
@@ -260,7 +259,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         y0: 0,
         y1: 1,
         yref: 'paper',
-        line: { color: '#d97706', width: 1.2, dash: 'dash' }
+        line: { color: '#FBBF24', width: 1.2, dash: 'dash' }
       });
       a.push({
         x: ftf,
@@ -268,7 +267,7 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
         yref: 'paper',
         text: `FTF ${ftf.toFixed(1)}`,
         showarrow: false,
-        font: { size: 9, color: '#d97706', family: 'monospace' },
+        font: { size: 9, color: '#FBBF24', family: 'JetBrains Mono, monospace' },
         yshift: 0
       });
     }
@@ -280,97 +279,120 @@ export default function EnvelopeChart({ envelope = {}, theory = {}, evidence = [
   const yUpper = Math.max(0.05, maxAmp * 1.15);
 
   return (
-    <div className="bg-white border border-zinc-300 p-4">
+    <div className="bg-[#202027] border border-[#353540] rounded-xl p-5 shadow-lg space-y-4">
       {/* Header and Toggle Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-[#353540]">
         <div>
-          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-800">
-            Envelope Spectrum (Demodulated 2000–5000 Hz Band)
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-[#22D3EE] animate-pulse"></span>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE]">
+              Primary Kinematic Detector
+            </span>
+          </div>
+          <h2 className="text-sm sm:text-base font-bold font-mono uppercase tracking-wider text-[#F5F5FA]">
+            Demodulated Envelope Spectrum (2,000–5,000 Hz Resonant Band)
           </h2>
-          <p className="text-[11px] font-mono text-zinc-500">
-            X-axis: Frequency (0 to 600 Hz) | Y-axis: Envelope Amplitude (a.u.) | Shaded boxes: ±1% tolerance windows
+          <p className="text-xs text-[#A5A5B5] mt-0.5">
+            X-axis: Frequency (0 to 600 Hz) &bull; Cyan trace: Demodulated envelope &bull; Shaded bands: ±1% kinematic tolerance windows
           </p>
         </div>
 
         {/* Family Toggles */}
-        <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
-          <label className="flex items-center gap-1.5 cursor-pointer bg-zinc-50 border border-zinc-200 px-2 py-1">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+          <label className={`flex items-center gap-2 cursor-pointer px-2.5 py-1.5 rounded-lg border transition-all ${
+            showOuter
+              ? 'bg-[#E000A8]/15 border-[#E000A8]/50 text-[#F5F5FA] shadow-[0_0_10px_rgba(224,0,168,0.2)]'
+              : 'bg-[#191920] border-[#353540] text-[#6E6E82]'
+          }`}>
             <input
               type="checkbox"
               checked={showOuter}
               onChange={(e) => setShowOuter(e.target.checked)}
-              className="accent-red-600 rounded-none w-3.5 h-3.5"
+              className="accent-[#E000A8] rounded w-3.5 h-3.5"
             />
-            <span className="w-2.5 h-0.5 bg-red-600 inline-block" />
-            <span className="text-zinc-800 font-medium">Outer (BPFO)</span>
+            <span className="w-2.5 h-1 bg-[#E000A8] rounded-full inline-block" />
+            <span className="font-semibold">Outer (BPFO)</span>
           </label>
 
-          <label className="flex items-center gap-1.5 cursor-pointer bg-zinc-50 border border-zinc-200 px-2 py-1">
+          <label className={`flex items-center gap-2 cursor-pointer px-2.5 py-1.5 rounded-lg border transition-all ${
+            showInner
+              ? 'bg-[#38BDF8]/15 border-[#38BDF8]/50 text-[#F5F5FA] shadow-[0_0_10px_rgba(56,189,248,0.2)]'
+              : 'bg-[#191920] border-[#353540] text-[#6E6E82]'
+          }`}>
             <input
               type="checkbox"
               checked={showInner}
               onChange={(e) => setShowInner(e.target.checked)}
-              className="accent-blue-600 rounded-none w-3.5 h-3.5"
+              className="accent-[#38BDF8] rounded w-3.5 h-3.5"
             />
-            <span className="w-2.5 h-0.5 bg-blue-600 inline-block" />
-            <span className="text-zinc-800 font-medium">Inner (BPFI)</span>
+            <span className="w-2.5 h-1 bg-[#38BDF8] rounded-full inline-block" />
+            <span className="font-semibold">Inner (BPFI)</span>
           </label>
 
-          <label className="flex items-center gap-1.5 cursor-pointer bg-zinc-50 border border-zinc-200 px-2 py-1">
+          <label className={`flex items-center gap-2 cursor-pointer px-2.5 py-1.5 rounded-lg border transition-all ${
+            showBall
+              ? 'bg-[#A100FF]/15 border-[#A100FF]/50 text-[#F5F5FA] shadow-[0_0_10px_rgba(161,0,255,0.2)]'
+              : 'bg-[#191920] border-[#353540] text-[#6E6E82]'
+          }`}>
             <input
               type="checkbox"
               checked={showBall}
               onChange={(e) => setShowBall(e.target.checked)}
-              className="accent-purple-600 rounded-none w-3.5 h-3.5"
+              className="accent-[#A100FF] rounded w-3.5 h-3.5"
             />
-            <span className="w-2.5 h-0.5 bg-purple-600 inline-block" />
-            <span className="text-zinc-800 font-medium">Ball (2xBSF)</span>
+            <span className="w-2.5 h-1 bg-[#A100FF] rounded-full inline-block" />
+            <span className="font-semibold">Ball (2×BSF)</span>
           </label>
 
-          <label className="flex items-center gap-1.5 cursor-pointer bg-zinc-50 border border-zinc-200 px-2 py-1">
+          <label className={`flex items-center gap-2 cursor-pointer px-2.5 py-1.5 rounded-lg border transition-all ${
+            showCage
+              ? 'bg-[#FBBF24]/15 border-[#FBBF24]/50 text-[#F5F5FA] shadow-[0_0_10px_rgba(251,191,36,0.2)]'
+              : 'bg-[#191920] border-[#353540] text-[#6E6E82]'
+          }`}>
             <input
               type="checkbox"
               checked={showCage}
               onChange={(e) => setShowCage(e.target.checked)}
-              className="accent-amber-600 rounded-none w-3.5 h-3.5"
+              className="accent-[#FBBF24] rounded w-3.5 h-3.5"
             />
-            <span className="w-2.5 h-0.5 bg-amber-600 inline-block" />
-            <span className="text-zinc-800 font-medium">Cage (FTF)</span>
+            <span className="w-2.5 h-1 bg-[#FBBF24] rounded-full inline-block" />
+            <span className="font-semibold">Cage (FTF)</span>
           </label>
         </div>
       </div>
 
       {/* Plot Container */}
-      <div className="w-full h-80 sm:h-96 mt-2">
+      <div className="w-full h-80 sm:h-96 rounded-lg overflow-hidden bg-[#181820] border border-[#353540]/60">
         <Plot
           data={traces}
           layout={{
             autosize: true,
-            margin: { l: 50, r: 25, t: 25, b: 45 },
+            margin: { l: 55, r: 25, t: 30, b: 50 },
             xaxis: {
-              title: { text: 'Frequency (Hz)', font: { family: 'monospace', size: 11, color: '#3f3f46' } },
+              title: { text: 'Frequency (Hz)', font: { family: 'JetBrains Mono, monospace', size: 11, color: '#A5A5B5' } },
               range: [0, 600],
               showgrid: true,
-              gridcolor: '#f0f0f1',
+              gridcolor: '#282833',
               zeroline: true,
-              zerolinecolor: '#d4d4d8',
-              tickfont: { family: 'monospace', size: 10 }
+              zerolinecolor: '#353540',
+              tickfont: { family: 'JetBrains Mono, monospace', size: 10, color: '#A5A5B5' }
             },
             yaxis: {
-              title: { text: 'Envelope Amplitude', font: { family: 'monospace', size: 11, color: '#3f3f46' } },
+              title: { text: 'Envelope Amplitude', font: { family: 'JetBrains Mono, monospace', size: 11, color: '#A5A5B5' } },
               range: [0, yUpper],
               showgrid: true,
-              gridcolor: '#f0f0f1',
+              gridcolor: '#282833',
               zeroline: true,
-              zerolinecolor: '#d4d4d8',
-              tickfont: { family: 'monospace', size: 10 }
+              zerolinecolor: '#353540',
+              tickfont: { family: 'JetBrains Mono, monospace', size: 10, color: '#A5A5B5' }
             },
             shapes: shapes,
             annotations: annotations,
             showlegend: false,
             hovermode: 'closest',
-            plot_bgcolor: '#ffffff',
-            paper_bgcolor: '#ffffff'
+            plot_bgcolor: '#15151B',
+            paper_bgcolor: '#191920',
+            font: { family: 'Inter, sans-serif', color: '#F5F5FA' }
           }}
           config={{
             responsive: true,

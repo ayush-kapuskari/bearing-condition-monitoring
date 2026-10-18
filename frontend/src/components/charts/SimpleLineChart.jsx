@@ -6,14 +6,14 @@ export default function SimpleLineChart({
   y = [],
   xTitle = 'X',
   yTitle = 'Y',
-  lineColor = '#2563eb',
+  lineColor = '#22D3EE',
   caption = '',
-  height = 320,
+  height = 340,
   hoverTemplate = 'X: %{x:.3f}<br>Y: %{y:.4f}<extra></extra>'
 }) {
   return (
     <div className="w-full">
-      <div className="w-full" style={{ height: `${height}px` }}>
+      <div className="w-full rounded-lg overflow-hidden bg-[#181820] border border-[#353540]/60" style={{ height: `${height}px` }}>
         <Plot
           data={[
             {
@@ -21,36 +21,38 @@ export default function SimpleLineChart({
               y: y,
               type: 'scatter',
               mode: 'lines',
-              line: { color: lineColor, width: 1.2 },
+              line: { color: lineColor, width: 1.4 },
               hovertemplate: hoverTemplate
             }
           ]}
           layout={{
             autosize: true,
-            margin: { l: 50, r: 25, t: 15, b: 45 },
+            margin: { l: 55, r: 25, t: 20, b: 50 },
             xaxis: {
-              title: { text: xTitle, font: { family: 'monospace', size: 11, color: '#3f3f46' } },
+              title: { text: xTitle, font: { family: 'JetBrains Mono, monospace', size: 11, color: '#A5A5B5' } },
               showgrid: true,
-              gridcolor: '#f0f0f1',
+              gridcolor: '#282833',
               zeroline: true,
-              zerolinecolor: '#d4d4d8',
-              tickfont: { family: 'monospace', size: 10 }
+              zerolinecolor: '#353540',
+              tickfont: { family: 'JetBrains Mono, monospace', size: 10, color: '#A5A5B5' }
             },
             yaxis: {
-              title: { text: yTitle, font: { family: 'monospace', size: 11, color: '#3f3f46' } },
+              title: { text: yTitle, font: { family: 'JetBrains Mono, monospace', size: 11, color: '#A5A5B5' } },
               showgrid: true,
-              gridcolor: '#f0f0f1',
+              gridcolor: '#282833',
               zeroline: true,
-              zerolinecolor: '#d4d4d8',
-              tickfont: { family: 'monospace', size: 10 }
+              zerolinecolor: '#353540',
+              tickfont: { family: 'JetBrains Mono, monospace', size: 10, color: '#A5A5B5' }
             },
-            plot_bgcolor: '#ffffff',
-            paper_bgcolor: '#ffffff'
+            plot_bgcolor: '#15151B',
+            paper_bgcolor: '#191920',
+            font: { family: 'Inter, sans-serif', color: '#F5F5FA' }
           }}
           config={{
             responsive: true,
             displayModeBar: true,
-            displaylogo: false
+            displaylogo: false,
+            modeBarButtonsToRemove: ['lasso2d', 'select2d']
           }}
           style={{ width: '100%', height: '100%' }}
           useResizeHandler={true}
@@ -58,10 +60,12 @@ export default function SimpleLineChart({
       </div>
 
       {caption && (
-        <div className="mt-2 p-2 bg-amber-50 border border-amber-200 text-xs font-mono text-amber-900">
-          <span className="font-semibold uppercase">[Observation Note]:</span> {caption}
+        <div className="mt-2.5 p-3 rounded-lg bg-[#202027] border border-[#353540] text-xs font-mono text-[#A5A5B5] flex items-start gap-2">
+          <span className="text-[#22D3EE] font-bold uppercase select-none">[NOTE]:</span>
+          <span>{caption}</span>
         </div>
       )}
     </div>
   );
 }
+

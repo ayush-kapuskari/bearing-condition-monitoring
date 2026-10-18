@@ -35,7 +35,7 @@ export default function StatusStrip({ meta = {}, diagnosis = {}, knownCondition 
           </span>
           <VerdictBadge label={verdictLabel} abnormal={diagnosis.abnormal} />
 
-          {knownCondition && (
+          {knownCondition ? (
             <div className="flex items-center gap-2 pl-3 border-l border-zinc-200 text-xs font-mono">
               <span className="text-zinc-500">KNOWN GROUND TRUTH:</span>
               <span className="font-semibold text-zinc-800 bg-zinc-100 px-2 py-0.5 border border-zinc-300">
@@ -56,6 +56,13 @@ export default function StatusStrip({ meta = {}, diagnosis = {}, knownCondition 
                   UNCERTAIN
                 </span>
               )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 pl-3 border-l border-zinc-200 text-xs font-mono">
+              <span className="text-zinc-500">SOURCE:</span>
+              <span className="font-semibold text-zinc-700 bg-zinc-100 px-2 py-0.5 border border-zinc-300">
+                Uploaded file
+              </span>
             </div>
           )}
         </div>

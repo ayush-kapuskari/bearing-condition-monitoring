@@ -1,4 +1,5 @@
 # CWRU Dataset
+matlab/data/raw/
 
 # MATLAB generated files
 *.asv

@@ -4,10 +4,26 @@
 
 @layer base {
   body {
-    background-color: #f4f4f5; /* zinc-100 */
-    color: #18181b; /* zinc-900 */
+    background-color: #111116;
+    color: #F5F5FA;
     font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Custom dark scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #111116;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #353540;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A100FF;
   }
 }
 
@@ -15,3 +31,47 @@
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+
+/* Subtle glow animations */
+@keyframes neonPulse {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(161, 0, 255, 0.6));
+  }
+  50% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 12px rgba(224, 0, 168, 0.8));
+  }
+}
+
+.animate-neon-pulse {
+  animation: neonPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Dark glass card utility */
+.glass-panel {
+  background: rgba(32, 32, 39, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #353540;
+}
+
+.glass-panel-glow {
+  background: rgba(32, 32, 39, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(161, 0, 255, 0.25);
+  box-shadow: 0 0 20px -5px rgba(161, 0, 255, 0.15);
+}
+
+/* Plotly overrides for dark background */
+.js-plotly-plot .plotly .modebar {
+  background: transparent !important;
+}
+.js-plotly-plot .plotly .modebar-btn path {
+  fill: #A5A5B5 !important;
+}
+.js-plotly-plot .plotly .modebar-btn.active path,
+.js-plotly-plot .plotly .modebar-btn:hover path {
+  fill: #22D3EE !important;
+}
+

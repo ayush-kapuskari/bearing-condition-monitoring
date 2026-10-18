@@ -31,6 +31,16 @@ app.use(
         return callback(null, true);
       }
 
+      // Allow any Vercel deployment (production & preview URLs)
+      try {
+        const url = new URL(origin);
+        if (url.hostname === 'vercel.app' || url.hostname.endsWith('.vercel.app')) {
+          return callback(null, true);
+        }
+      } catch {
+        // ignore invalid URL
+      }
+
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     methods: ['GET', 'POST'],
